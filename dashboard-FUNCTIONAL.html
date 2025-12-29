@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="light">
+  <meta name="theme-color" content="#10B981">
+  <title>SPAR Dashboard - Southern Pets Animal Rescue</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Minimal scrollbars */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #E2E8F0 transparent;
+    }
+    *::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    *::-webkit-scrollbar-thumb {
+      background: #E2E8F0;
+      border-radius: 2px;
+    }
+
+    :root {
+      /* SPAR Brand Colors */
+      --bg-primary: #F9FAFB;
+      --bg-secondary: #FFFFFF;
+      --card-bg: #FFFFFF;
+      
+      /* Rescue Green Theme */
+      --accent: #10B981;
+      --accent-hover: #059669;
+      --accent-light: #D1FAE5;
+      --accent-soft: rgba(16, 185, 129, 0.1);
+      
+      /* Status Colors */
+      --status-success: #10B981;
+      --status-warning: #F59E0B;
+      --status-info: #3B82F6;
+      --status-danger: #EF4444;
+      
+      /* Text */
+      --text-primary: #111827;
+      --text-secondary: #4B5563;
+      --text-muted: #9CA3AF;
+      --text-inverse: #FFFFFF;
+      
+      /* Borders */
+      --border: #E5E7EB;
+      --border-medium: #D1D5DB;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+      
+      /* Spacing */
+      --space-xs: 6px;
+      --space-sm: 12px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      
+      /* Layout */
+      --bottom-nav-height: 72px;
+      --top-bar-height: 64px;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      height: 100%;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ============================================
+       APP CONTAINER
+       ============================================ */
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* ============================================
+       TOP BAR
+       ============================================ */
+    .top-bar {
+      height: var(--top-bar-height);
+      padding-top: env(safe-area-inset-top);
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
+      flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-container {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .brand-info h1 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .page-name {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .top-bar-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    .top-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-secondary);
+      position: relative;
+    }
+
+    .top-btn:active {
+      transform: scale(0.95);
+      background: var(--accent-soft);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: var(--status-danger);
+      color: white;
+      font-size: 0.625rem;
+      font-weight: 700;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-secondary);
+    }
+
+    /* ============================================
+       MAIN CONTENT
+       ============================================ */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: var(--space-md);
+      padding-bottom: calc(var(--bottom-nav-height) + var(--space-md) + env(safe-area-inset-bottom));
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       SEARCH & FILTERS
+       ============================================ */
+    .search-container {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px 12px 44px;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: var(--space-md);
+      padding-bottom: 4px;
+    }
+
+    .filter-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      padding: 8px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip:active {
+      transform: scale(0.95);
+    }
+
+    .chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+    }
+
+    /* ============================================
+       GRID SYSTEM
+       ============================================ */
+    .animals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 640px) {
+      .animals-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .animals-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .animals-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    /* ============================================
+       ANIMAL CARD
+       ============================================ */
+    .animal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .animal-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .animal-image-container {
+      position: relative;
+      width: 100%;
+      padding-top: 100%;
+      background: var(--bg-primary);
+      overflow: hidden;
+    }
+
+    .animal-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .animal-card:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .image-action-btn {
+      width: 44px;
+      height: 44px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      color: var(--text-primary);
+    }
+
+    .image-action-btn:active {
+      transform: scale(0.9);
+    }
+
+    .status-badge-corner {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: capitalize;
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text-primary);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-badge-corner.available {
+      background: rgba(16, 185, 129, 0.95);
+      color: white;
+    }
+
+    .status-badge-corner.pending {
+      background: rgba(245, 158, 11, 0.95);
+      color: white;
+    }
+
+    .animal-info {
+      padding: var(--space-md);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .animal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .animal-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .animal-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .health-icons {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .health-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+    }
+
+    .health-icon.yes {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--status-success);
+      border-color: var(--status-success);
+    }
+
+    .health-icon.no {
+      background: rgba(156, 163, 175, 0.1);
+      color: var(--text-muted);
+    }
+
+    .animal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .action-btn:active {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .action-btn.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    /* ============================================
+       STATS GRID
+       ============================================ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+    }
+
+    @media (min-width: 640px) {
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: var(--space-md);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--status-success);
+    }
+
+    .stat-icon.info {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--status-info);
+    }
+
+    .stat-icon.warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--status-warning);
+    }
+
+    .stat-icon.danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--status-danger);
+    }
+
+    .stat-value {
+      font-size: 1.875rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .stat-trend {
+      font-size: 0.75rem;
+      color: var(--status-success);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ============================================
+       EMAIL INBOX
+       ============================================ */
+    .email-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .email-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: var(--space-md);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .email-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .email-item.unread {
+      border-left: 4px solid var(--accent);
+    }
+
+    .email-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .email-sender {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 0.9375rem;
+    }
+
+    .email-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .email-subject {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      font-size: 0.9375rem;
+    }
+
+    .email-preview {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .email-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .email-tag {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .email-tag.application {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--status-info);
+    }
+
+    .email-tag.tnr {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--status-warning);
+    }
+
+    .email-tag.inquiry {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--status-success);
+    }
+
+    /* ============================================
+       ANALYTICS CHARTS
+       ============================================ */
+    .chart-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: var(--space-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .chart-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .chart-period {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      padding: 6px 12px;
+      background: var(--bg-primary);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .chart-bar-wrapper {
+      height: 200px;
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      margin-bottom: var(--space-md);
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--accent), var(--accent-light));
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      min-height: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .chart-bar:hover {
+      opacity: 0.8;
+    }
+
+    .chart-bar-label {
+      position: absolute;
+      bottom: -24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .chart-bar-value {
+      position: absolute;
+      top: -24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    /* ============================================
+       SECTION HEADER
+       ============================================ */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .section-action {
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 10px;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-action:active {
+      background: var(--accent-soft);
+    }
+
+    /* ============================================
+       FAB
+       ============================================ */
+    .fab {
+      position: fixed;
+      bottom: calc(var(--bottom-nav-height) + var(--space-lg) + env(safe-area-inset-bottom));
+      right: var(--space-md);
+      width: 56px;
+      height: 56px;
+      background: var(--accent);
+      color: white;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+      transition: all 0.2s ease;
+      z-index: 999;
+    }
+
+    .fab:active {
+      transform: scale(0.9);
+    }
+
+    /* ============================================
+       BOTTOM NAVIGATION
+       ============================================ */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+      padding-top: 10px;
+      padding-bottom: env(safe-area-inset-bottom);
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      z-index: 1000;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+      max-width: 80px;
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 4px;
+      background: var(--accent);
+      border-radius: 0 0 4px 4px;
+    }
+
+    .nav-icon {
+      width: 24px;
+      height: 24px;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item.active .nav-icon {
+      transform: scale(1.1);
+    }
+
+    .nav-label {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    /* ============================================
+       MODAL
+       ============================================ */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: var(--space-md);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg-secondary);
+      border-radius: 20px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      padding: var(--space-lg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-primary);
+    }
+
+    .modal-body {
+      padding: var(--space-lg);
+    }
+
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      background: var(--bg-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.9375rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      border: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:active {
+      background: var(--border);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (min-width: 768px) {
+      .main-content {
+        padding: var(--space-lg);
+        padding-bottom: calc(var(--bottom-nav-height) + var(--space-lg) + env(safe-area-inset-bottom));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <div class="logo-container">
+          <img src="https://imagedelivery.net/g7wf09fCONpnidkRnR_5vw/be0043cf-6599-4d18-67a7-02a7a1e49000/thumbnail" alt="SPAR Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">
+        </div>
+        <div class="brand-info">
+          <h1>SPAR</h1>
+          <div class="page-name" id="currentPageName">Animals</div>
+        </div>
+      </div>
+      <div class="top-bar-right">
+        <div class="top-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span class="notification-badge">5</span>
+        </div>
+        <div class="top-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <!-- PAGE 1: ANIMALS -->
+      <div class="page active" id="animals-page">
+        <!-- Search -->
+        <div class="search-container">
+          <div class="search-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+          </div>
+          <input type="text" class="search-input" placeholder="Search by name, breed...">
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-row">
+          <div class="chip active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            All (13)
+          </div>
+          <div class="chip">Dogs (6)</div>
+          <div class="chip">Cats (7)</div>
+        </div>
+
+        <div class="filter-row">
+          <div class="chip active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Available
+          </div>
+          <div class="chip">Pending</div>
+          <div class="chip">Adopted</div>
+          <div class="chip">Medical</div>
+        </div>
+
+        <!-- Animals Grid -->
+        <div class="section-header">
+          <div class="section-title">All Animals</div>
+          <div class="section-action" onclick="openAddAnimal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Add New
+          </div>
+        </div>
+
+        <div class="animals-grid">
+          <!-- Blue -->
+          <div class="animal-card">
+            <div class="animal-image-container">
+              <img src="https://imagedelivery.net/g7wf09fCONpnidkRnR_5vw/661e4a02-9f62-430d-7c38-10aacc285900/public" class="animal-image" alt="Blue">
+              <div class="image-overlay">
+                <div class="image-action-btn" onclick="uploadPhoto(1)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div class="image-action-btn" onclick="editAnimal(1)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="status-badge-corner available">Available</div>
+            </div>
+            <div class="animal-info">
+              <div class="animal-title">Blue</div>
+              <div class="animal-subtitle">Pitbull • Male • 1 year old</div>
+              <div class="animal-meta">
+                <span>$250</span>
+              </div>
+              <div class="health-icons">
+                <div class="health-icon no" title="Not Spayed/Neutered">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </div>
+                <div class="health-icon yes" title="Heartworm Negative">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="health-icon no" title="Not Microchipped">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="animal-actions">
+                <button class="action-btn" onclick="editAnimal(1)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button class="action-btn primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milo -->
+          <div class="animal-card">
+            <div class="animal-image-container">
+              <img src="https://imagedelivery.net/g7wf09fCONpnidkRnR_5vw/07141085-1fe4-4e3f-c1ae-16b740e96200/public" class="animal-image" alt="Milo">
+              <div class="image-overlay">
+                <div class="image-action-btn" onclick="uploadPhoto(2)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div class="image-action-btn" onclick="editAnimal(2)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="status-badge-corner available">Available</div>
+            </div>
+            <div class="animal-info">
+              <div class="animal-title">Milo</div>
+              <div class="animal-subtitle">Mixed • Male • 1 year old</div>
+              <div class="animal-meta">
+                <span>$250</span>
+              </div>
+              <div class="health-icons">
+                <div class="health-icon no">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </div>
+                <div class="health-icon yes">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="health-icon no">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </div>
+              </div>
+              <div class="animal-actions">
+                <button class="action-btn" onclick="editAnimal(2)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button class="action-btn primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bodhi -->
+          <div class="animal-card">
+            <div class="animal-image-container">
+              <img src="https://imagedelivery.net/g7wf09fCONpnidkRnR_5vw/e4ac9686-d4dc-4a65-10b6-d3ed24f9d100/public" class="animal-image" alt="Bodhi">
+              <div class="image-overlay">
+                <div class="image-action-btn" onclick="uploadPhoto(3)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
+                <div class="image-action-btn" onclick="editAnimal(3)">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="status-badge-corner available">Available</div>
+            </div>
+            <div class="animal-info">
+              <div class="animal-title">Bodhi</div>
+              <div class="animal-subtitle">Mixed • Male</div>
+              <div class="animal-meta">
+                <span>$250</span>
+              </div>
+              <div class="health-icons">
+                <div class="health-icon yes">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="health-icon yes">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div class="health-icon yes">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div class="animal-actions">
+                <button class="action-btn" onclick="editAnimal(3)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                  Edit
+                </button>
+                <button class="action-btn primary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                  View
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- More animals would continue... -->
+          <div style="grid-column: 1 / -1; text-align: center; padding: var(--space-xl); color: var(--text-muted);">
+            + 10 more animals available (Edith, Gloria, Rolo, Nikki, Pepperjack, etc.)
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 2: ANALYTICS -->
+      <div class="page" id="analytics-page">
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <div class="stat-value">2,847</div>
+            <div class="stat-label">Site Visitors</div>
+            <div class="stat-trend">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              +24% this week
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon info">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+            <div class="stat-value">47</div>
+            <div class="stat-label">Applications</div>
+            <div class="stat-trend">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              18 this month
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                <line x1="4" y1="22" x2="4" y2="15"></line>
+              </svg>
+            </div>
+            <div class="stat-value">23</div>
+            <div class="stat-label">Adoptions YTD</div>
+            <div class="stat-trend">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              8 this month
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon danger">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </div>
+            <div class="stat-value">156</div>
+            <div class="stat-label">TNR Cats Helped</div>
+            <div class="stat-trend">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              12 this month
+            </div>
+          </div>
+        </div>
+
+        <!-- Traffic Chart -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <div class="chart-title">Website Traffic</div>
+            <div class="chart-period">Last 7 Days</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar" style="height: 65%;">
+              <div class="chart-bar-value">342</div>
+              <div class="chart-bar-label">Mon</div>
+            </div>
+            <div class="chart-bar" style="height: 80%;">
+              <div class="chart-bar-value">421</div>
+              <div class="chart-bar-label">Tue</div>
+            </div>
+            <div class="chart-bar" style="height: 55%;">
+              <div class="chart-bar-value">289</div>
+              <div class="chart-bar-label">Wed</div>
+            </div>
+            <div class="chart-bar" style="height: 90%;">
+              <div class="chart-bar-value">475</div>
+              <div class="chart-bar-label">Thu</div>
+            </div>
+            <div class="chart-bar" style="height: 75%;">
+              <div class="chart-bar-value">398</div>
+              <div class="chart-bar-label">Fri</div>
+            </div>
+            <div class="chart-bar" style="height: 100%;">
+              <div class="chart-bar-value">523</div>
+              <div class="chart-bar-label">Sat</div>
+            </div>
+            <div class="chart-bar" style="height: 85%;">
+              <div class="chart-bar-value">447</div>
+              <div class="chart-bar-label">Sun</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applications Chart -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <div class="chart-title">Adoption Applications</div>
+            <div class="chart-period">This Month</div>
+          </div>
+          <div class="chart-bar-wrapper">
+            <div class="chart-bar" style="height: 40%;">
+              <div class="chart-bar-value">4</div>
+              <div class="chart-bar-label">Week 1</div>
+            </div>
+            <div class="chart-bar" style="height: 60%;">
+              <div class="chart-bar-value">6</div>
+              <div class="chart-bar-label">Week 2</div>
+            </div>
+            <div class="chart-bar" style="height: 80%;">
+              <div class="chart-bar-value">8</div>
+              <div class="chart-bar-label">Week 3</div>
+            </div>
+            <div class="chart-bar" style="height: 50%;">
+              <div class="chart-bar-value">5</div>
+              <div class="chart-bar-label">Week 4</div>
+            </div>
+          </div>
+          <div class="chart-legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--accent);"></div>
+              <span>New Applications</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--status-info);"></div>
+              <span>Approved: 12</span>
+            </div>
+            <div class="legend-item">
+              <div class="legend-color" style="background: var(--status-danger);"></div>
+              <span>Denied: 3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Popular Pages -->
+        <div class="chart-container">
+          <div class="chart-header">
+            <div class="chart-title">Most Viewed Pages</div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 0.9375rem; color: var(--text-primary);">/adopt</div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="flex: 1; min-width: 100px; height: 8px; background: var(--bg-primary); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 85%; height: 100%; background: var(--accent);"></div>
+                </div>
+                <div style="font-weight: 700; color: var(--text-primary); min-width: 60px; text-align: right;">1,847</div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 0.9375rem; color: var(--text-primary);">/</div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="flex: 1; min-width: 100px; height: 8px; background: var(--bg-primary); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 65%; height: 100%; background: var(--accent);"></div>
+                </div>
+                <div style="font-weight: 700; color: var(--text-primary); min-width: 60px; text-align: right;">1,234</div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 0.9375rem; color: var(--text-primary);">/services</div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="flex: 1; min-width: 100px; height: 8px; background: var(--bg-primary); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 45%; height: 100%; background: var(--accent);"></div>
+                </div>
+                <div style="font-weight: 700; color: var(--text-primary); min-width: 60px; text-align: right;">845</div>
+              </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 0.9375rem; color: var(--text-primary);">/gallery</div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="flex: 1; min-width: 100px; height: 8px; background: var(--bg-primary); border-radius: 4px; overflow: hidden;">
+                  <div style="width: 30%; height: 100%; background: var(--accent);"></div>
+                </div>
+                <div style="font-weight: 700; color: var(--text-primary); min-width: 60px; text-align: right;">567</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE 3: EMAILS -->
+      <div class="page" id="emails-page">
+        <!-- Email Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon info">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </div>
+            <div class="stat-value">47</div>
+            <div class="stat-label">Total Emails</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon success">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+              </svg>
+            </div>
+            <div class="stat-value">8</div>
+            <div class="stat-label">Unread</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon warning">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+            </div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">This Week</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon danger">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <div class="stat-value">3</div>
+            <div class="stat-label">Urgent</div>
+          </div>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-row">
+          <div class="chip active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+              <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+            </svg>
+            All
+          </div>
+          <div class="chip">Unread (8)</div>
+          <div class="chip">Applications</div>
+          <div class="chip">TNR</div>
+          <div class="chip">Inquiries</div>
+        </div>
+
+        <!-- Email List -->
+        <div class="email-list">
+          <!-- Email 1 -->
+          <div class="email-item unread">
+            <div class="email-header">
+              <div class="email-sender">Sarah Johnson</div>
+              <div class="email-time">2 hours ago</div>
+            </div>
+            <div class="email-subject">Application for Blue - Follow Up</div>
+            <div class="email-preview">Hi Rae, I wanted to follow up on my application for Blue. I've completed all the requirements and would love to schedule a home visit...</div>
+            <div class="email-tags">
+              <div class="email-tag application">APPLICATION</div>
+            </div>
+          </div>
+
+          <!-- Email 2 -->
+          <div class="email-item unread">
+            <div class="email-header">
+              <div class="email-sender">Mike Davis</div>
+              <div class="email-time">5 hours ago</div>
+            </div>
+            <div class="email-subject">TNR Request - 5 Cats in Crowley</div>
+            <div class="email-preview">Hello, I have 5 cats that need to be trapped and neutered. They've been in my backyard for about 3 months now and I'd like to help them...</div>
+            <div class="email-tags">
+              <div class="email-tag tnr">TNR</div>
+            </div>
+          </div>
+
+          <!-- Email 3 -->
+          <div class="email-item">
+            <div class="email-header">
+              <div class="email-sender">Jennifer Martinez</div>
+              <div class="email-time">1 day ago</div>
+            </div>
+            <div class="email-subject">Thank You - Milo's Adoption</div>
+            <div class="email-preview">Dear Rae and team, I just wanted to say thank you so much for helping us adopt Milo. He's settling in wonderfully and the kids love him...</div>
+            <div class="email-tags">
+              <div class="email-tag inquiry">INQUIRY</div>
+            </div>
+          </div>
+
+          <!-- Email 4 -->
+          <div class="email-item unread">
+            <div class="email-header">
+              <div class="email-sender">Robert Wilson</div>
+              <div class="email-time">1 day ago</div>
+            </div>
+            <div class="email-subject">Question About Adoption Process</div>
+            <div class="email-preview">Hi, I'm interested in adopting a dog and wanted to know more about your adoption process. Do you require a fenced yard for all dogs?</div>
+            <div class="email-tags">
+              <div class="email-tag inquiry">INQUIRY</div>
+            </div>
+          </div>
+
+          <!-- Email 5 -->
+          <div class="email-item">
+            <div class="email-header">
+              <div class="email-sender">Linda Thompson</div>
+              <div class="email-time">2 days ago</div>
+            </div>
+            <div class="email-subject">Donation Receipt Request</div>
+            <div class="email-preview">Hello, I made a donation last week through Venmo and was wondering if I could get a receipt for my tax records. Thank you!</div>
+            <div class="email-tags">
+              <div class="email-tag inquiry">INQUIRY</div>
+            </div>
+          </div>
+
+          <!-- Email 6 -->
+          <div class="email-item unread">
+            <div class="email-header">
+              <div class="email-sender">David Brown</div>
+              <div class="email-time">3 days ago</div>
+            </div>
+            <div class="email-subject">Application for Nikki</div>
+            <div class="email-preview">Hi SPAR team, I've submitted my application for Nikki the cat. I have experience with FIV positive cats and would love to give her a home...</div>
+            <div class="email-tags">
+              <div class="email-tag application">APPLICATION</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; padding: var(--space-xl); color: var(--text-muted);">
+          All emails from SouthernPetsAnimalRescue@gmail.com
+        </div>
+      </div>
+
+      <!-- PAGE 4: SETTINGS -->
+      <div class="page" id="settings-page">
+        <div class="section-header">
+          <div class="section-title">Settings</div>
+        </div>
+
+        <!-- Coming Soon -->
+        <div style="text-align: center; padding: var(--space-xl); color: var(--text-muted);">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 16px; opacity: 0.5;">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m8.66-13.66l-4.24 4.24m-4.24 4.24-4.24 4.24M1 12h6m6 0h6m-1.34 8.66l-4.24-4.24m-4.24-4.24L2.34 2.34"></path>
+          </svg>
+          <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 8px;">Settings Panel</div>
+          <div>Configure your rescue preferences, team members, and integrations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab" onclick="openAddAnimal()">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+    </div>
+
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+      <div class="nav-item active" onclick="navigateTo('animals')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="10" r="3"></circle>
+          <path d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z"></path>
+        </svg>
+        <div class="nav-label">Animals</div>
+      </div>
+      <div class="nav-item" onclick="navigateTo('analytics')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="20" x2="12" y2="10"></line>
+          <line x1="18" y1="20" x2="18" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="16"></line>
+        </svg>
+        <div class="nav-label">Analytics</div>
+      </div>
+      <div class="nav-item" onclick="navigateTo('emails')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+          <polyline points="22,6 12,13 2,6"></polyline>
+        </svg>
+        <div class="nav-label">Emails</div>
+      </div>
+      <div class="nav-item" onclick="navigateTo('settings')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M12 1v6m0 6v6m8.66-13.66l-4.24 4.24m-4.24 4.24-4.24 4.24M1 12h6m6 0h6m-1.34 8.66l-4.24-4.24m-4.24-4.24L2.34 2.34"></path>
+        </svg>
+        <div class="nav-label">Settings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDIT ANIMAL MODAL -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">Edit Animal</div>
+        <div class="modal-close" onclick="closeModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-input" value="Blue" placeholder="Animal name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Species</label>
+          <select class="form-select">
+            <option>Dog</option>
+            <option>Cat</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Breed</label>
+          <input type="text" class="form-input" value="Pitbull" placeholder="Breed">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Age</label>
+          <input type="text" class="form-input" value="1 year old" placeholder="e.g. 1 year old">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Adoption Fee</label>
+          <input type="text" class="form-input" value="$250" placeholder="$250">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          <textarea class="form-textarea" placeholder="Tell this animal's story...">Blue is a sweet and energetic 1-year-old Pitbull looking for his forever home. He loves to play and is great with other dogs.</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select">
+            <option>Available</option>
+            <option>Pending</option>
+            <option>Adopted</option>
+            <option>Medical</option>
+            <option>Foster</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" style="flex: 1;" onclick="saveAnimal()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // SPAR Dashboard - FUNCTIONAL VERSION
+    // Replaces placeholder alerts with REAL API calls
+    // ============================================
+
+    const API_BASE = ''; // Same origin
+    let animals = [];
+    let currentEditingAnimal = null;
+
+    // ============================================
+    // LOAD ANIMALS FROM DATABASE
+    // ============================================
+    async function loadAnimals() {
+      try {
+        const response = await fetch(`${API_BASE}/api/animals`);
+        const data = await response.json();
+        animals = data.animals || [];
+        renderAnimals();
+        updateStats();
+      } catch (error) {
+        console.error('Failed to load animals:', error);
+        showNotification('Failed to load animals', 'error');
+      }
+    }
+
+    function renderAnimals() {
+      const grid = document.querySelector('.animals-grid');
+      if (!grid) return;
+
+      if (animals.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #9CA3AF;">No animals yet. Click + to add your first one!</div>';
+        return;
+      }
+
+      grid.innerHTML = animals.map(animal => `
+        <div class="animal-card" data-id="${animal.id}">
+          <div class="animal-photo">
+            ${animal.photo_url ? 
+              `<img src="${animal.photo_url}" alt="${animal.name}">` :
+              `<div class="animal-placeholder">${animal.species === 'cat' ? '🐱' : '🐕'}</div>`
+            }
+            <div class="photo-overlay">
+              <button class="icon-btn" onclick="uploadPhoto(${animal.id})">📷</button>
+            </div>
+          </div>
+          <div class="animal-info">
+            <div class="animal-header">
+              <div>
+                <div class="animal-name">${animal.name}</div>
+                <div class="animal-meta">${animal.breed || animal.species} • ${animal.age || 'Unknown age'}</div>
+              </div>
+              <span class="status-badge status-${animal.status}">${animal.status}</span>
+            </div>
+            <div class="animal-health">
+              ${animal.spayed_neutered ? '<span class="health-badge">✓ Fixed</span>' : ''}
+              ${animal.vaccines_utd ? '<span class="health-badge">✓ Vaccinated</span>' : ''}
+              ${animal.heartworm_negative ? '<span class="health-badge">✓ HW-</span>' : ''}
+            </div>
+            <div class="animal-actions">
+              <button class="btn-secondary btn-sm" onclick="editAnimal(${animal.id})">Edit</button>
+              <button class="btn-danger btn-sm" onclick="deleteAnimal(${animal.id})">Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateStats() {
+      const totalAnimals = animals.length;
+      const availableAnimals = animals.filter(a => a.status === 'available').length;
+      
+      // Update stat cards if they exist
+      const totalEl = document.querySelector('[data-stat="total"]');
+      const availableEl = document.querySelector('[data-stat="available"]');
+      
+      if (totalEl) totalEl.textContent = totalAnimals;
+      if (availableEl) availableEl.textContent = availableAnimals;
+    }
+
+    // ============================================
+    // ADD/EDIT ANIMAL FUNCTIONS
+    // ============================================
+    function openAddAnimal() {
+      currentEditingAnimal = null;
+      const form = document.getElementById('animalForm');
+      if (form) form.reset();
+      
+      const modal = document.getElementById('editModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    function editAnimal(id) {
+      const animal = animals.find(a => a.id === id);
+      if (!animal) return;
+
+      currentEditingAnimal = animal;
+      
+      // Fill form fields
+      const fields = {
+        'animalName': animal.name,
+        'animalSpecies': animal.species,
+        'animalBreed': animal.breed,
+        'animalAge': animal.age,
+        'animalGender': animal.gender,
+        'animalStatus': animal.status,
+        'animalDescription': animal.description,
+        'spayedNeutered': animal.spayed_neutered === 1,
+        'vaccinesUtd': animal.vaccines_utd === 1,
+        'heartwormNegative': animal.heartworm_negative === 1
+      };
+
+      Object.entries(fields).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (el.type === 'checkbox') {
+            el.checked = value;
+          } else {
+            el.value = value || '';
+          }
+        }
+      });
+
+      const modal = document.getElementById('editModal');
+      if (modal) modal.classList.add('active');
+    }
+
+    async function saveAnimal() {
+      const formData = {
+        name: document.getElementById('animalName')?.value,
+        species: document.getElementById('animalSpecies')?.value || 'dog',
+        breed: document.getElementById('animalBreed')?.value,
+        age: document.getElementById('animalAge')?.value,
+        gender: document.getElementById('animalGender')?.value,
+        status: document.getElementById('animalStatus')?.value || 'available',
+        description: document.getElementById('animalDescription')?.value,
+        spayed_neutered: document.getElementById('spayedNeutered')?.checked ? 1 : 0,
+        vaccines_utd: document.getElementById('vaccinesUtd')?.checked ? 1 : 0,
+        heartworm_negative: document.getElementById('heartwormNegative')?.checked ? 1 : 0
+      };
+
+      try {
+        const url = currentEditingAnimal 
+          ? `${API_BASE}/api/animals/${currentEditingAnimal.id}`
+          : `${API_BASE}/api/animals`;
+        
+        const method = currentEditingAnimal ? 'PUT' : 'POST';
+
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) throw new Error('Save failed');
+
+        showNotification(currentEditingAnimal ? 'Animal updated!' : 'Animal added!', 'success');
+        closeModal();
+        await loadAnimals();
+      } catch (error) {
+        console.error('Save error:', error);
+        showNotification('Failed to save animal', 'error');
+      }
+    }
+
+    async function deleteAnimal(id) {
+      if (!confirm('Are you sure you want to delete this animal?')) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/api/animals/${id}`, {
+          method: 'DELETE'
+        });
+
+        if (!response.ok) throw new Error('Delete failed');
+
+        showNotification('Animal deleted', 'success');
+        await loadAnimals();
+      } catch (error) {
+        console.error('Delete error:', error);
+        showNotification('Failed to delete animal', 'error');
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('editModal');
+      if (modal) modal.classList.remove('active');
+    }
+
+    // ============================================
+    // EMAIL FUNCTIONS  
+    // ============================================
+    async function sendEmail(to, subject, message) {
+      try {
+        const response = await fetch(`${API_BASE}/api/send-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ to, subject, message })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || 'Failed to send email');
+        }
+
+        showNotification('Email sent successfully!', 'success');
+        return true;
+      } catch (error) {
+        console.error('Email error:', error);
+        showNotification(error.message, 'error');
+        return false;
+      }
+    }
+
+    async function loadEmailStats() {
+      try {
+        const response = await fetch(`${API_BASE}/api/email-stats`);
+        const data = await response.json();
+        
+        // Update email stats in UI
+        const sentEl = document.querySelector('[data-stat="emails-sent"]');
+        const deliveredEl = document.querySelector('[data-stat="emails-delivered"]');
+        const openedEl = document.querySelector('[data-stat="emails-opened"]');
+        
+        if (sentEl) sentEl.textContent = data.sent || 0;
+        if (deliveredEl) deliveredEl.textContent = data.delivered || 0;
+        if (openedEl) openedEl.textContent = data.opened || 0;
+      } catch (error) {
+        console.error('Failed to load email stats:', error);
+      }
+    }
+
+    // ============================================
+    // UTILITY FUNCTIONS
+    // ============================================
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      `;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    function uploadPhoto(id) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = true;
+      input.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        showNotification(`Uploading ${files.length} photo(s)...`, 'info');
+
+        // TODO: Implement R2 upload via Cloudflare Images API
+        setTimeout(() => {
+          showNotification('Photo upload feature coming soon!', 'info');
+        }, 1000);
+      };
+      input.click();
+    }
+
+    // ============================================
+    // NAVIGATION (Keep original navigation code)
+    // ============================================
+    const pages = {
+      animals: 'Animals',
+      analytics: 'Analytics',
+      emails: 'Emails',
+      settings: 'Settings'
+    };
+
+    function navigateTo(pageName) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+
+      const targetPage = document.getElementById(`${pageName}-page`);
+      if (targetPage) targetPage.classList.add('active');
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      const activeNav = event?.target?.closest?.('.nav-item');
+      if (activeNav) activeNav.classList.add('active');
+
+      const pageTitle = document.getElementById('currentPageName');
+      if (pageTitle) pageTitle.textContent = pages[pageName] || pageName;
+
+      if (navigator.vibrate) {
+        navigator.vibrate(10);
+      }
+    }
+
+    // ============================================
+    // INITIALIZATION
+    // ============================================
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load initial data
+      await loadAnimals();
+      await loadEmailStats();
+
+      // Setup email form
+      const emailForm = document.getElementById('emailForm');
+      if (emailForm) {
+        emailForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const to = document.getElementById('emailTo')?.value;
+          const subject = document.getElementById('emailSubject')?.value;
+          const message = document.getElementById('emailMessage')?.value;
+
+          if (await sendEmail(to, subject, message)) {
+            emailForm.reset();
+            await loadEmailStats();
+          }
+        });
+      }
+
+      // Setup animal form
+      const animalForm = document.getElementById('animalForm');
+      if (animalForm) {
+        animalForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          saveAnimal();
+        });
+      }
+
+      // Haptic feedback
+      document.querySelectorAll('.chip, .btn, .top-btn, .section-action, .animal-card, .email-item').forEach(el => {
+        el.addEventListener('click', () => {
+          if (navigator.vibrate) {
+            navigator.vibrate(10);
+          }
+        });
+      });
+
+      // Active chip selection
+      document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+          this.parentElement.querySelectorAll('.chip').forEach(c => {
+            c.classList.remove('active');
+          });
+          this.classList.add('active');
+        });
+      });
+
+      // Close modal on background click
+      const modal = document.getElementById('editModal');
+      if (modal) {
+        modal.addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+      }
+    });
+
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from { transform: translateX(400px); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(400px); opacity: 0; }
+      }
+      .animal-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
